@@ -14,8 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import android.net.Uri;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,6 +56,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+        File file = new File(getFilesDir(), "pepe.jpg");
+        System.out.println(file.exists());
+        if (file.exists()){
+            String imagePath = file.getAbsolutePath();
+            imageView.setImageURI(Uri.parse(imagePath));
+        }
+
         btnOpenGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
             Uri imageUri = (Uri) data;
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                saveImageToInternalStorage(bitmap); // Guardar la imagen en almacenamiento interno
                 imageView.setImageBitmap(bitmap);
                 imageView.setVisibility(View.VISIBLE);
             } catch (IOException e) {
@@ -92,8 +103,33 @@ public class MainActivity extends AppCompatActivity {
         } else if (data instanceof Bitmap) {
             // Cámara
             Bitmap bitmap = (Bitmap) data;
+            saveImageToInternalStorage(bitmap); // Guardar la imagen en almacenamiento interno
             imageView.setImageBitmap(bitmap);
             imageView.setVisibility(View.VISIBLE);
         }
     }
+    private void saveImageToInternalStorage(Bitmap bitmap) {
+        try {
+            // Obtener el directorio de almacenamiento interno de la aplicación
+            File internalStorageDir = getFilesDir();
+
+            // Crear un nombre de archivo único (puedes mejorar esto según tus necesidades)
+            String fileName = "pepe.jpg";
+
+            // Crear un nuevo archivo en el directorio de almacenamiento interno
+            File imageFile = new File(internalStorageDir, fileName);
+
+            // Crear un flujo de salida para escribir la imagen en el archivo
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+
+            // Comprimir y escribir la imagen en el archivo
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            // Cerrar el flujo de salida
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
