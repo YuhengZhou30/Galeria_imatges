@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button btnOpenGallery = findViewById(R.id.btnOpenGallery);
         Button btnTakePhoto = findViewById(R.id.btnTakePhoto);
+        Button btnHistory = findViewById(R.id.btnHistory);
         imageView = findViewById(R.id.imageView);
 
         galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -81,7 +82,13 @@ public class MainActivity extends AppCompatActivity {
 
         getLastPhoto();
 
-
+        btnHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, galeryHistory.class);
+                startActivity(intent);
+            }
+        });
         btnOpenGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
